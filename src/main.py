@@ -80,6 +80,7 @@ def generate_index_html(
     template_path: Path,
     output_path: Path,
     all_active_warnings: List[WeatherWarning],
+    marine_warnings: List[WeatherWarning],
     county_warnings_map: Dict[str, List[WeatherWarning]],
     now_utc: datetime,
 ) -> None:
@@ -98,12 +99,14 @@ def generate_index_html(
 
     cards_joined = "\n".join(county_cards_html)
     nationwide_badge = get_severity_badge_html(all_active_warnings)
+    marine_badge = get_severity_badge_html(marine_warnings)
     last_updated_str = now_utc.strftime("%Y-%m-%d %H:%M")
 
     # String replacements
     rendered = template_content.replace("{{ TOTAL_ACTIVE_WARNINGS }}", str(len(all_active_warnings)))
     rendered = rendered.replace("{{ LAST_UPDATED_UTC }}", last_updated_str)
     rendered = rendered.replace("{{ NATIONWIDE_BADGE }}", nationwide_badge)
+    rendered = rendered.replace("{{ MARINE_BADGE }}", marine_badge)
     rendered = rendered.replace("{{ COUNTY_TOTAL_COUNT }}", str(len(COUNTIES)))
     rendered = rendered.replace("{{ COUNTY_CARDS }}", cards_joined)
     rendered = rendered.replace("{{ SITE_HOST }}", "")
@@ -149,7 +152,19 @@ def run_pipeline(
     all_ics_path.write_text(export_calendar_ics(all_cal), encoding="utf-8")
     logger.info("Wrote nationwide feed: %s (%d events)", all_ics_path, len(active_warnings))
 
-    # 5. Generate per-county feeds (<county>.ics)
+    # 5. Generate marine feed (marine.ics)
+    marine_warnings = [w for w in active_warnings if w.is_marine]
+    marine_cal = build_calendar_feed(
+        feed_slug="marine",
+        warnings=marine_warnings,
+        county_name="Coastal & Marine Waters",
+        now_utc=now,
+    )
+    marine_ics_path = output_dir / "marine.ics"
+    marine_ics_path.write_text(export_calendar_ics(marine_cal), encoding="utf-8")
+    logger.info("Wrote marine feed: %s (%d events)", marine_ics_path, len(marine_warnings))
+
+    # 6. Generate per-county feeds (<county>.ics)
     county_warnings_map: Dict[str, List[WeatherWarning]] = {}
 
     for county in COUNTIES:
@@ -157,11 +172,11 @@ def run_pipeline(
         c_name = county["name"]
 
         # An alert applies to this county if:
-        # - it is nationwide, OR
-        # - this county slug is in the alert's affected counties
+        # - it is a terrestrial warning (not marine-only), AND
+        # - it is nationwide, OR this county slug is in the alert's affected counties
         c_warnings = [
             w for w in active_warnings
-            if w.is_nationwide or (slug in w.affected_counties)
+            if not w.is_marine and (w.is_nationwide or (slug in w.affected_counties))
         ]
         county_warnings_map[slug] = c_warnings
 
@@ -176,13 +191,14 @@ def run_pipeline(
 
     logger.info("Generated %d per-county .ics feeds.", len(COUNTIES))
 
-    # 6. Generate dist/index.html
+    # 7. Generate dist/index.html
     tpl_path = template_path or (Path(__file__).parent.parent / "web" / "index_template.html")
     index_out_path = output_dir / "index.html"
     generate_index_html(
         template_path=tpl_path,
         output_path=index_out_path,
         all_active_warnings=active_warnings,
+        marine_warnings=marine_warnings,
         county_warnings_map=county_warnings_map,
         now_utc=now,
     )

@@ -25,6 +25,7 @@ Live on GitHub Pages at **`https://vician.github.io/met-alerts/`**:
 | Feed | URL | Protocol |
 | :--- | :--- | :--- |
 | **Nationwide (All Warnings)** | `https://vician.github.io/met-alerts/all.ics` | `webcal://vician.github.io/met-alerts/all.ics` |
+| **Coastal & Marine Waters** | `https://vician.github.io/met-alerts/marine.ics` | `webcal://vician.github.io/met-alerts/marine.ics` |
 | **County Dublin** | `https://vician.github.io/met-alerts/dublin.ics` | `webcal://vician.github.io/met-alerts/dublin.ics` |
 | **County Cork** | `https://vician.github.io/met-alerts/cork.ics` | `webcal://vician.github.io/met-alerts/cork.ics` |
 | **County Galway** | `https://vician.github.io/met-alerts/galway.ics` | `webcal://vician.github.io/met-alerts/galway.ics` |

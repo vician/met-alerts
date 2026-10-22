@@ -22,12 +22,18 @@ def test_run_pipeline_end_to_end(tmp_path: Path) -> None:
         now_utc=test_now,
     )
 
-    # 1. Check all.ics
+    # 1. Check all.ics and marine.ics
     all_ics = tmp_path / "all.ics"
     assert all_ics.exists()
     all_cal = Calendar.from_ical(all_ics.read_text(encoding="utf-8"))
     events = [c for c in all_cal.walk() if c.name == "VEVENT"]
     assert len(events) == 4
+
+    marine_ics = tmp_path / "marine.ics"
+    assert marine_ics.exists()
+    marine_cal = Calendar.from_ical(marine_ics.read_text(encoding="utf-8"))
+    m_events = [c for c in marine_cal.walk() if c.name == "VEVENT"]
+    assert len(m_events) == 1
 
     # 2. Check all 26 counties exist
     for county in COUNTIES:

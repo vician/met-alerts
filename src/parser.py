@@ -194,6 +194,7 @@ def extract_counties(
     regions: List[str],
     headline: str = "",
     description: str = "",
+    warning_type: str = "",
 ) -> tuple[Set[str], bool, bool]:
     """Extract affected county slugs from region codes and text content.
 
@@ -226,29 +227,34 @@ def extract_counties(
             if re.search(pattern, combined_text):
                 affected.add(slug)
 
-    # Check for nationwide indicators
-    is_nationwide = False
-    nationwide_patterns = [
-        r"\ball coasts\b",
-        r"\bnationwide\b",
-        r"\ball counties\b",
-        r"\bentire country\b",
-        r"\ball of ireland\b",
-        r"\bireland\b",
-    ]
-    for pat in nationwide_patterns:
-        if re.search(pat, headline.lower()):
-            is_nationwide = True
-            break
-
-    # If all 26 counties are present in affected, it is nationwide
-    if len(affected.intersection(ALL_COUNTY_SLUGS)) == len(ALL_COUNTY_SLUGS):
-        is_nationwide = True
-
-    # Check if this alert is strictly marine
+    # Check if this alert is marine
+    hl_lower = headline.lower()
     is_marine = False
-    if total_regions > 0 and marine_count == total_regions and not affected:
+    if (marine_count > 0 and not affected) or (
+        any(k in hl_lower for k in ("marine", "small craft", "all coasts", "irish sea"))
+        and not affected
+    ):
         is_marine = True
+
+    # Check for nationwide terrestrial land indicators (only if not a marine-only warning)
+    is_nationwide = False
+    if not is_marine:
+        nationwide_patterns = [
+            r"\bnationwide\b",
+            r"\ball counties\b",
+            r"\bentire country\b",
+            r"\ball of ireland\b",
+        ]
+        for pat in nationwide_patterns:
+            if re.search(pat, hl_lower):
+                is_nationwide = True
+                break
+
+        # If all 26 counties are present in affected, it is nationwide
+        if len(affected.intersection(ALL_COUNTY_SLUGS)) == len(ALL_COUNTY_SLUGS):
+            is_nationwide = True
+
+    return affected, is_nationwide, is_marine
 
     return affected, is_nationwide, is_marine
 
@@ -319,7 +325,7 @@ def parse_warning(raw_alert: Dict[str, Any]) -> Optional[WeatherWarning]:
         regions_list = []
 
     affected_counties, is_nationwide, is_marine = extract_counties(
-        regions_list, headline, clean_desc
+        regions_list, headline, clean_desc, warning_type
     )
 
     return WeatherWarning(

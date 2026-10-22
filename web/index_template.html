@@ -459,6 +459,25 @@
       </div>
     </div>
 
+    <!-- Marine & Coastal Feed -->
+    <div class="featured-card" style="background: linear-gradient(145deg, #1e293b, #0c2a40); border-color: #38bdf8; margin-top: -1.25rem;">
+      <div class="featured-info">
+        <h2>
+          <span>⚓ Coastal & Marine Waters Feed</span>
+          {{ MARINE_BADGE }}
+        </h2>
+        <p>Marine gale, storm, and small craft warnings for all Irish coastal waters, coasts, and the Irish Sea.</p>
+      </div>
+      <div class="button-group" style="min-width: 280px;">
+        <a href="webcal://{{ SITE_HOST }}/marine.ics" class="btn btn-primary" data-feed="marine.ics" onclick="handleSubscribe(event, 'marine.ics')">
+          <span>📅 Subscribe</span>
+        </a>
+        <button class="btn btn-secondary" onclick="copyFeedUrl('marine.ics')">
+          <span>📋 Copy URL</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Search Controls -->
     <div class="controls">
       <div class="search-box">

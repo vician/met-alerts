@@ -87,7 +87,8 @@ def test_parse_warning_fixture() -> None:
     w2 = warnings[1]
     assert w2.id == "2"
     assert w2.warning_type == "Small Craft"
-    assert w2.is_nationwide is True
+    assert w2.is_nationwide is False
+    assert w2.is_marine is True
 
     # Warning 3 (id=5): Rain for Cork, Kerry, Waterford
     w3 = warnings[2]
