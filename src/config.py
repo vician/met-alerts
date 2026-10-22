@@ -3,7 +3,7 @@
 from typing import Dict, List, Set
 
 MET_EIREANN_WARNINGS_URL = "https://www.met.ie/Open_Data/json/warning_ALL.json"
-USER_AGENT = "MetAlertsCalendar/1.0 (+https://github.com/met-alerts)"
+USER_AGENT = "MetAlertsCalendar/1.0 (+https://github.com/vician/met-alerts)"
 DEFAULT_REQUEST_TIMEOUT = 15  # seconds
 
 # FIPS 10-4 / Met Éireann region code mapping to county slugs

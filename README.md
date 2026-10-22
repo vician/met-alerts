@@ -20,15 +20,15 @@ This project continuously fetches live Irish weather warnings, produces standard
 
 ## 🌐 Public Feed URL Structure
 
-When deployed to GitHub Pages at `https://<username>.github.io/<repo-name>/`:
+Live on GitHub Pages at **`https://vician.github.io/met-alerts/`**:
 
 | Feed | URL | Protocol |
 | :--- | :--- | :--- |
-| **Nationwide (All Warnings)** | `https://<username>.github.io/<repo-name>/all.ics` | `webcal://<username>.github.io/<repo-name>/all.ics` |
-| **County Dublin** | `https://<username>.github.io/<repo-name>/dublin.ics` | `webcal://<username>.github.io/<repo-name>/dublin.ics` |
-| **County Cork** | `https://<username>.github.io/<repo-name>/cork.ics` | `webcal://<username>.github.io/<repo-name>/cork.ics` |
-| **County Galway** | `https://<username>.github.io/<repo-name>/galway.ics` | `webcal://<username>.github.io/<repo-name>/galway.ics` |
-| *Any other county* | `https://<username>.github.io/<repo-name>/<slug>.ics` | `webcal://<username>.github.io/<repo-name>/<slug>.ics` |
+| **Nationwide (All Warnings)** | `https://vician.github.io/met-alerts/all.ics` | `webcal://vician.github.io/met-alerts/all.ics` |
+| **County Dublin** | `https://vician.github.io/met-alerts/dublin.ics` | `webcal://vician.github.io/met-alerts/dublin.ics` |
+| **County Cork** | `https://vician.github.io/met-alerts/cork.ics` | `webcal://vician.github.io/met-alerts/cork.ics` |
+| **County Galway** | `https://vician.github.io/met-alerts/galway.ics` | `webcal://vician.github.io/met-alerts/galway.ics` |
+| *Any other county* | `https://vician.github.io/met-alerts/<slug>.ics` | `webcal://vician.github.io/met-alerts/<slug>.ics` |
 
 *(County slugs are standard lowercase names: `carlow`, `cavan`, `clare`, `cork`, `donegal`, `dublin`, `galway`, `kerry`, `kildare`, `kilkenny`, `laois`, `leitrim`, `limerick`, `longford`, `louth`, `mayo`, `meath`, `monaghan`, `offaly`, `roscommon`, `sligo`, `tipperary`, `waterford`, `westmeath`, `wexford`, `wicklow`)*
 
@@ -54,7 +54,7 @@ Click **Fork** in the top right of this repository to create your own copy.
 2. Under Workflows in the left sidebar, click **Update Met Éireann Weather Warnings**.
 3. Click the **Run workflow** dropdown on the right and click **Run workflow**.
 4. Once completed (approx. 30 seconds), your site will be live at:
-   `https://<your-username>.github.io/<your-repo>/`
+   `https://vician.github.io/met-alerts/`
 
 ### 4. Automatic Scheduled Updates
 The workflow runs automatically every 30 minutes (at 17 and 47 minutes past the hour via cron `17,47 * * * *`). The minutes are offset from the top of the hour to avoid runner queues and rate limiting.
@@ -134,7 +134,7 @@ The workflow runs automatically every 30 minutes (at 17 and 47 minutes past the 
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/met-alerts.git
+git clone https://github.com/vician/met-alerts.git
 cd met-alerts
 
 # Create virtual environment
