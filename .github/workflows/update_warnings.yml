@@ -2,8 +2,9 @@ name: Update Met Éireann Weather Warnings
 
 on:
   schedule:
-    # Run every 30 minutes offset from the top of the hour
-    - cron: '17,47 * * * *'
+    # Run every 30 minutes offset from top of the hour to avoid runner queue spikes
+    - cron: '17 * * * *'
+    - cron: '47 * * * *'
   workflow_dispatch:
   push:
     branches:
