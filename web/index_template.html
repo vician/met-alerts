@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Met Éireann Weather Warning Calendar Feeds</title>
+  <meta name="description" content="Subscribe to live Met Éireann weather warning calendar feeds (webcal/.ics) for your county or nationwide. Free, open-source, and auto-updated.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌦️</text></svg>">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --btn-secondary-bg: #334155;
+      --btn-secondary-hover: #475569;
+      --yellow: #eab308;
+      --orange: #f97316;
+      --red: #ef4444;
+      --green: #22c55e;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 9999px;
+      padding: 0.25rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    h1 {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .status-summary {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .status-summary strong {
+      color: var(--text);
+    }
+
+    /* Nationwide Featured Card */
+    .featured-card {
+      background: linear-gradient(145deg, #1e293b, #172554);
+      border: 2px solid #38bdf8;
+      border-radius: 16px;
+      padding: 1.75rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.15);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .featured-info h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .featured-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.35rem;
+    }
+
+    /* Search & Filter */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* County Grid */
+    .county-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .county-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .county-card:hover {
+      border-color: #475569;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .county-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+    }
+
+    .county-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .county-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Alert Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-none {
+      background: rgba(34, 197, 94, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .badge-yellow {
+      background: rgba(234, 179, 8, 0.18);
+      color: var(--yellow);
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .badge-orange {
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--orange);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+    }
+
+    .badge-red {
+      background: rgba(239, 68, 68, 0.22);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      animation: alert-pulse 2s infinite;
+    }
+
+    @keyframes alert-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary-bg);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-hover);
+    }
+
+    /* Info / Guide Section */
+    .info-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .info-section h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .info-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+
+    .info-card h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-card p, .info-card ol {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-left: 1rem;
+    }
+
+    .caveat-box {
+      margin-top: 1.5rem;
+      background: rgba(234, 179, 8, 0.08);
+      border-left: 4px solid var(--yellow);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+    }
+
+    .caveat-box strong {
+      color: var(--yellow);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      padding-top: 2rem;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      h1 { font-size: 1.85rem; }
+      .featured-card { flex-direction: column; align-items: stretch; }
+      .button-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge-live">
+        <span class="pulse-dot"></span>
+        <span>Met Éireann Live Feeds</span>
+      </div>
+      <h1>Met Éireann Weather Warning Calendars</h1>
+      <p class="subtitle">
+        Subscribe directly to official Met Éireann weather warning calendar feeds (webcal/.ics) for your county. Automatically refreshed every 30 minutes.
+      </p>
+      <div class="status-summary">
+        <span>Active Warnings Nationwide: <strong>{{ TOTAL_ACTIVE_WARNINGS }}</strong></span>
+        <span>•</span>
+        <span>Last Checked: <strong>{{ LAST_UPDATED_UTC }} UTC</strong></span>
+        <span>•</span>
+        <span>Format: <strong>RFC 5545 iCalendar (webcal://)</strong></span>
+      </div>
+    </header>
+
+    <!-- Nationwide Feed -->
+    <div class="featured-card">
+      <div class="featured-info">
+        <h2>
+          <span>🇮🇪 All Ireland (Nationwide Feed)</span>
+          {{ NATIONWIDE_BADGE }}
+        </h2>
+        <p>Contains all active weather warnings nationwide, including marine alerts and all counties.</p>
+      </div>
+      <div class="button-group" style="min-width: 280px;">
+        <a href="webcal://{{ SITE_HOST }}/all.ics" class="btn btn-primary" data-feed="all.ics" onclick="handleSubscribe(event, 'all.ics')">
+          <span>📅 Subscribe</span>
+        </a>
+        <button class="btn btn-secondary" onclick="copyFeedUrl('all.ics')">
+          <span>📋 Copy URL</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Controls -->
+    <div class="controls">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="countySearch" class="search-input" placeholder="Search county (e.g. Dublin, Cork, Galway)..." aria-label="Search county">
+      </div>
+      <div style="font-size: 0.9rem; color: var(--text-muted);">
+        Showing <span id="countyCount">{{ COUNTY_TOTAL_COUNT }}</span> counties
+      </div>
+    </div>
+
+    <!-- County Feeds Grid -->
+    <div class="county-grid" id="countyGrid">
+      {{ COUNTY_CARDS }}
+      <div class="no-results" id="noResults">
+        No counties matching "<span id="searchTerm"></span>"
+      </div>
+    </div>
+
+    <!-- Client Instructions & Caveats -->
+    <section class="info-section">
+      <h3>📱 How to Subscribe</h3>
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>🍏 Apple Calendar (iOS / macOS)</h4>
+          <ol>
+            <li>Click <strong>Subscribe</strong> next to your county.</li>
+            <li>Tap <em>Subscribe</em> when prompted by Calendar.</li>
+            <li>Set <em>Auto-refresh</em> to <strong>Every 15 minutes</strong> or <strong>Every hour</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="info-card">
+          <h4>📬 Microsoft Outlook</h4>
+          <ol>
+            <li>Click <strong>Copy URL</strong> next to your county.</li>
+            <li>In Outlook, go to <em>Add Calendar</em> &rarr; <em>Subscribe from web</em>.</li>
+            <li>Paste the URL and click <em>Import</em>.</li>
+          </ol>
+        </div>
+
+        <div class="info-card">
+          <h4>🌐 Google Calendar</h4>
+          <ol>
+            <li>Click <strong>Copy URL</strong> next to your county.</li>
+            <li>In Google Calendar, click <strong>+</strong> next to <em>Other calendars</em> &rarr; <em>From URL</em>.</li>
+            <li>Paste the URL and click <em>Add calendar</em>.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="caveat-box">
+        <strong>⚠️ Important Calendar Client Notice:</strong><br>
+        Apple Calendar and Outlook allow you to configure refresh intervals down to 15–30 minutes.<br>
+        However, <strong>Google Calendar</strong> polls external calendar subscriptions on its own schedule (typically every 8 to 24 hours), which cannot be changed by feed providers or users. If you rely on time-sensitive weather warnings, Apple Calendar, Outlook, or native calendar apps with customizable refresh intervals are recommended.
+      </div>
+    </section>
+
+    <!-- Footer & Attribution -->
+    <footer>
+      <p>
+        Data provided under open licence by <a href="https://www.met.ie" target="_blank" rel="noopener">Met Éireann (Ireland's National Meteorological Service)</a>.
+      </p>
+      <p style="margin-top: 0.4rem;">
+        Zero-cost, open-source serverless project deployed via GitHub Actions and GitHub Pages.
+        Please consult <a href="https://www.met.ie" target="_blank" rel="noopener">met.ie</a> for official warnings and live updates.
+      </p>
+    </footer>
+  </div>
+
+  <div id="toast">Copied feed URL to clipboard!</div>
+
+  <script>
+    function getAbsoluteFeedUrl(feedFile, protocol) {
+      const proto = protocol || window.location.protocol;
+      const host = window.location.host;
+      let path = window.location.pathname;
+      if (!path.endsWith('/')) {
+        path = path.substring(0, path.lastIndexOf('/') + 1);
+      }
+      return `${proto}//${host}${path}${feedFile}`;
+    }
+
+    function handleSubscribe(event, feedFile) {
+      // Use webcal protocol for one-click calendar client opening
+      const webcalUrl = getAbsoluteFeedUrl(feedFile, 'webcal:');
+      window.location.href = webcalUrl;
+      event.preventDefault();
+    }
+
+    function copyFeedUrl(feedFile) {
+      const httpsUrl = getAbsoluteFeedUrl(feedFile, 'https:');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(httpsUrl).then(() => {
+          showToast('Copied: ' + httpsUrl);
+        }).catch(() => {
+          prompt('Copy this calendar feed URL:', httpsUrl);
+        });
+      } else {
+        prompt('Copy this calendar feed URL:', httpsUrl);
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Client-side search and filtering
+    const searchInput = document.getElementById('countySearch');
+    const cards = document.querySelectorAll('.county-card');
+    const noResults = document.getElementById('noResults');
+    const searchTermSpan = document.getElementById('searchTerm');
+    const countyCountSpan = document.getElementById('countyCount');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+          const countyName = card.getAttribute('data-county') || '';
+          const province = card.getAttribute('data-province') || '';
+          const match = countyName.includes(query) || province.includes(query);
+          if (match) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        if (countyCountSpan) {
+          countyCountSpan.textContent = visibleCount;
+        }
+
+        if (visibleCount === 0) {
+          noResults.style.display = 'block';
+          searchTermSpan.textContent = query;
+        } else {
+          noResults.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "capId": "2.49.0.1.372.0.261022093800.4dc2f102-f033-44a5-a819-ce84cfe303a6",
+    "type": "Rain",
+    "severity": "Moderate",
+    "certainty": "Likely",
+    "level": "yellow",
+    "issued": "2026-10-20T10:56:52.811949+01:00",
+    "updated": "2026-10-22T09:38:00.577059+01:00",
+    "onset": "2026-10-22T19:00:00+01:00",
+    "expiry": "2026-10-23T10:00:00+01:00",
+    "headline": "Status Yellow - Rain warning for Leinster, Munster",
+    "description": "<p>Heavy rain associated with Storm Austen will spread eastwards across the country. Strong easterly winds will back northwesterly and strengthen further, especially in the south and southeast.</p><p>Be aware of potential impacts:</p><ul><li>Difficult travelling conditions</li><li>Localised flooding possible</li><li>Outdoor events impacted</li><li>Debris, loose objects displaced</li><li>Some fallen trees, branches</li></ul>",
+    "status": "Warning",
+    "regions": [
+      "EI07", "EI15", "EI12", "EI29", "EI19", "EI03", "EI18", "EI23",
+      "EI21", "EI11", "EI30", "EI13", "EI16", "EI31", "EI01", "EI27",
+      "EI26", "EI04"
+    ]
+  },
+  {
+    "id": 2,
+    "capId": "2.49.0.1.372.0.261021150831.e13eff0f-8dad-479f-bed3-84066022440f",
+    "type": "small-craft",
+    "severity": "Moderate",
+    "certainty": "Likely",
+    "level": "yellow",
+    "issued": "2026-10-20T15:53:33.206878+01:00",
+    "updated": "2026-10-21T15:08:31.295118+01:00",
+    "onset": "2026-10-22T15:00:00+01:00",
+    "expiry": "2026-10-24T23:00:00+01:00",
+    "headline": "Small Craft warning for all coasts of Ireland",
+    "description": "<p><span data-teams=\"true\">&nbsp;East to northeast winds veering northwesterly will reach force 6 or higher at times.</span></p>",
+    "status": "Warning",
+    "regions": [
+      "EI805", "EI806", "EI807", "EI808", "EI811", "EI812", "EI813",
+      "EI814", "EI815", "EI816", "EI817", "EI818", "EI819", "EI820",
+      "EI821", "EI822", "EI810", "EI809"
+    ]
+  },
+  {
+    "id": 5,
+    "capId": "2.49.0.1.372.0.261021103853.9d551def-41ab-45ed-be1d-59cf78e9d011",
+    "type": "Rain",
+    "severity": "Severe",
+    "certainty": "Likely",
+    "level": "orange",
+    "issued": "2026-10-21T10:38:53.458868+01:00",
+    "updated": "2026-10-21T10:38:53.458868+01:00",
+    "onset": "2026-10-22T22:00:00+01:00",
+    "expiry": "2026-10-23T05:00:00+01:00",
+    "headline": "Status Orange - Rain warning for Cork, Kerry, Waterford",
+    "description": "<p>Intense rain associated with Storm Austen.</p><p>&nbsp;</p><p>Prepare for impacts:</p><ul><li>Disruption and delays to public transport (rail, bus)</li><li>Flooding expected</li><li>Very difficult travelling conditions</li></ul>",
+    "status": "Warning",
+    "regions": ["EI11", "EI27", "EI04"]
+  },
+  {
+    "id": 6,
+    "capId": "2.49.0.1.372.0.261021104122.797124aa-7cd2-4250-99c9-c021ddca2083",
+    "type": "Rain",
+    "severity": "Severe",
+    "certainty": "Likely",
+    "level": "orange",
+    "issued": "2026-10-21T10:41:22.702715+01:00",
+    "updated": "2026-10-21T10:41:22.702715+01:00",
+    "onset": "2026-10-23T02:00:00+01:00",
+    "expiry": "2026-10-23T08:00:00+01:00",
+    "headline": "Status Orange - Rain warning for Dublin, Wexford, Wicklow",
+    "description": "<p>Intense rain associated with Storm Austen.</p><p>Prepare for impacts:</p><ul><li>Disruption and delays to public transport (rail, bus)</li><li>Flooding expected</li><li>Very difficult travelling conditions</li></ul>",
+    "status": "Warning",
+    "regions": ["EI07", "EI30", "EI31"]
+  }
+]
