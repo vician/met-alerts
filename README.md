@@ -18,53 +18,21 @@ This project continuously fetches live Irish weather warnings, produces standard
 
 ---
 
-## 🌐 Public Feed URL Structure
+## 🌐 Public Feed URLs
 
-Live on GitHub Pages at **`https://vician.github.io/met-alerts/`**:
+All feeds are available on the **[live GitHub Pages site](https://vician.github.io/met-alerts/)** — open it to browse every county and use the one-click subscribe or copy buttons.
 
-### 📍 Per-County Feeds (Recommended for Personal Use)
+Feed files follow a simple pattern at the base URL of your deployment:
 
-To prevent your calendar from being overwhelmed by alerts from distant parts of the country, **subscribing to your specific county is strongly recommended**. Each feed only contains warnings that directly impact that county:
+| Feed type | File |
+| :--- | :--- |
+| **Nationwide (all warnings, ⚠️ high volume)** | `all.ics` |
+| **Coastal & Marine Waters** | `marine.ics` |
+| **Per-county** *(recommended for personal use)* | `<county-slug>.ics` e.g. `dublin.ics`, `cork.ics`, `galway.ics` |
 
-| County | Province | HTTPS Feed URL | Webcal Subscribe Link |
-| :--- | :--- | :--- | :--- |
-| **Carlow** | Leinster | `https://vician.github.io/met-alerts/carlow.ics` | `webcal://vician.github.io/met-alerts/carlow.ics` |
-| **Cavan** | Ulster | `https://vician.github.io/met-alerts/cavan.ics` | `webcal://vician.github.io/met-alerts/cavan.ics` |
-| **Clare** | Munster | `https://vician.github.io/met-alerts/clare.ics` | `webcal://vician.github.io/met-alerts/clare.ics` |
-| **Cork** | Munster | `https://vician.github.io/met-alerts/cork.ics` | `webcal://vician.github.io/met-alerts/cork.ics` |
-| **Donegal** | Ulster | `https://vician.github.io/met-alerts/donegal.ics` | `webcal://vician.github.io/met-alerts/donegal.ics` |
-| **Dublin** | Leinster | `https://vician.github.io/met-alerts/dublin.ics` | `webcal://vician.github.io/met-alerts/dublin.ics` |
-| **Galway** | Connacht | `https://vician.github.io/met-alerts/galway.ics` | `webcal://vician.github.io/met-alerts/galway.ics` |
-| **Kerry** | Munster | `https://vician.github.io/met-alerts/kerry.ics` | `webcal://vician.github.io/met-alerts/kerry.ics` |
-| **Kildare** | Leinster | `https://vician.github.io/met-alerts/kildare.ics` | `webcal://vician.github.io/met-alerts/kildare.ics` |
-| **Kilkenny** | Leinster | `https://vician.github.io/met-alerts/kilkenny.ics` | `webcal://vician.github.io/met-alerts/kilkenny.ics` |
-| **Laois** | Leinster | `https://vician.github.io/met-alerts/laois.ics` | `webcal://vician.github.io/met-alerts/laois.ics` |
-| **Leitrim** | Connacht | `https://vician.github.io/met-alerts/leitrim.ics` | `webcal://vician.github.io/met-alerts/leitrim.ics` |
-| **Limerick** | Munster | `https://vician.github.io/met-alerts/limerick.ics` | `webcal://vician.github.io/met-alerts/limerick.ics` |
-| **Longford** | Leinster | `https://vician.github.io/met-alerts/longford.ics` | `webcal://vician.github.io/met-alerts/longford.ics` |
-| **Louth** | Leinster | `https://vician.github.io/met-alerts/louth.ics` | `webcal://vician.github.io/met-alerts/louth.ics` |
-| **Mayo** | Connacht | `https://vician.github.io/met-alerts/mayo.ics` | `webcal://vician.github.io/met-alerts/mayo.ics` |
-| **Meath** | Leinster | `https://vician.github.io/met-alerts/meath.ics` | `webcal://vician.github.io/met-alerts/meath.ics` |
-| **Monaghan** | Ulster | `https://vician.github.io/met-alerts/monaghan.ics` | `webcal://vician.github.io/met-alerts/monaghan.ics` |
-| **Offaly** | Leinster | `https://vician.github.io/met-alerts/offaly.ics` | `webcal://vician.github.io/met-alerts/offaly.ics` |
-| **Roscommon** | Connacht | `https://vician.github.io/met-alerts/roscommon.ics` | `webcal://vician.github.io/met-alerts/roscommon.ics` |
-| **Sligo** | Connacht | `https://vician.github.io/met-alerts/sligo.ics` | `webcal://vician.github.io/met-alerts/sligo.ics` |
-| **Tipperary** | Munster | `https://vician.github.io/met-alerts/tipperary.ics` | `webcal://vician.github.io/met-alerts/tipperary.ics` |
-| **Waterford** | Munster | `https://vician.github.io/met-alerts/waterford.ics` | `webcal://vician.github.io/met-alerts/waterford.ics` |
-| **Westmeath** | Leinster | `https://vician.github.io/met-alerts/westmeath.ics` | `webcal://vician.github.io/met-alerts/westmeath.ics` |
-| **Wexford** | Leinster | `https://vician.github.io/met-alerts/wexford.ics` | `webcal://vician.github.io/met-alerts/wexford.ics` |
-| **Wicklow** | Leinster | `https://vician.github.io/met-alerts/wicklow.ics` | `webcal://vician.github.io/met-alerts/wicklow.ics` |
+County slugs are lowercase names: `carlow`, `cavan`, `clare`, `cork`, `donegal`, `dublin`, `galway`, `kerry`, `kildare`, `kilkenny`, `laois`, `leitrim`, `limerick`, `longford`, `louth`, `mayo`, `meath`, `monaghan`, `offaly`, `roscommon`, `sligo`, `tipperary`, `waterford`, `westmeath`, `wexford`, `wicklow`.
 
 *(Note: Weather warnings for the 6 counties of Northern Ireland are officially issued by the UK Met Office, not Met Éireann).*
-
-### 🌐 Broader & Specialized Feeds
-
-These feeds cover broader geographic zones or specialized marine sectors.
-
-| Feed | URL | Protocol | Description & Notes |
-| :--- | :--- | :--- | :--- |
-| **Nationwide (All Warnings)** | `https://vician.github.io/met-alerts/all.ics` | `webcal://vician.github.io/met-alerts/all.ics` | **⚠️ High Volume:** Aggregates all warnings across all 26 counties and coastal waters. Can result in numerous overlapping events during stormy periods. Recommended for emergency services, transport operators, or weather enthusiasts. |
-| **Coastal & Marine Waters** | `https://vician.github.io/met-alerts/marine.ics` | `webcal://vician.github.io/met-alerts/marine.ics` | **🌊 For Mariners:** Covers gale warnings, storm warnings, and small craft advisories for Irish coastal waters (up to 30nm offshore) and the Irish Sea. |
 
 ---
 
