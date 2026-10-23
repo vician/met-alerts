@@ -22,16 +22,9 @@ This project continuously fetches live Irish weather warnings, produces standard
 
 Live on GitHub Pages at **`https://vician.github.io/met-alerts/`**:
 
-### Featured Feeds
+### 📍 Per-County Feeds (Recommended for Personal Use)
 
-| Feed | URL | Protocol |
-| :--- | :--- | :--- |
-| **Nationwide (All Warnings)** | `https://vician.github.io/met-alerts/all.ics` | `webcal://vician.github.io/met-alerts/all.ics` |
-| **Coastal & Marine Waters** | `https://vician.github.io/met-alerts/marine.ics` | `webcal://vician.github.io/met-alerts/marine.ics` |
-
-### All 26 Republic of Ireland Counties
-
-All 26 counties covered by Met Éireann have dedicated, automatically-updated feeds:
+To prevent your calendar from being overwhelmed by alerts from distant parts of the country, **subscribing to your specific county is strongly recommended**. Each feed only contains warnings that directly impact that county:
 
 | County | Province | HTTPS Feed URL | Webcal Subscribe Link |
 | :--- | :--- | :--- | :--- |
@@ -63,6 +56,15 @@ All 26 counties covered by Met Éireann have dedicated, automatically-updated fe
 | **Wicklow** | Leinster | `https://vician.github.io/met-alerts/wicklow.ics` | `webcal://vician.github.io/met-alerts/wicklow.ics` |
 
 *(Note: Weather warnings for the 6 counties of Northern Ireland are officially issued by the UK Met Office, not Met Éireann).*
+
+### 🌐 Broader & Specialized Feeds
+
+These feeds cover broader geographic zones or specialized marine sectors.
+
+| Feed | URL | Protocol | Description & Notes |
+| :--- | :--- | :--- | :--- |
+| **Nationwide (All Warnings)** | `https://vician.github.io/met-alerts/all.ics` | `webcal://vician.github.io/met-alerts/all.ics` | **⚠️ High Volume:** Aggregates all warnings across all 26 counties and coastal waters. Can result in numerous overlapping events during stormy periods. Recommended for emergency services, transport operators, or weather enthusiasts. |
+| **Coastal & Marine Waters** | `https://vician.github.io/met-alerts/marine.ics` | `webcal://vician.github.io/met-alerts/marine.ics` | **🌊 For Mariners:** Covers gale warnings, storm warnings, and small craft advisories for Irish coastal waters (up to 30nm offshore) and the Irish Sea. |
 
 ---
 

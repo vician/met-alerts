@@ -134,6 +134,65 @@
       margin-top: 0.35rem;
     }
 
+    .section-title-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .recommended-pill {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, 0.35);
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .notice-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .notice-pill-warning {
+      background: rgba(234, 179, 8, 0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+    }
+
+    .notice-pill-marine {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
     /* Search & Filter */
     .controls {
       display: flex;
@@ -440,62 +499,93 @@
       </div>
     </header>
 
-    <!-- Nationwide Feed -->
-    <div class="featured-card">
-      <div class="featured-info">
-        <h2>
-          <span>🇮🇪 All Ireland (Nationwide Feed)</span>
-          {{ NATIONWIDE_BADGE }}
+    <!-- County Feeds Section (Primary Focus) -->
+    <section>
+      <div class="section-title-wrap">
+        <h2 class="section-title">
+          <span>📍 County Feeds</span>
+          <span class="recommended-pill">★ Recommended for Personal Use</span>
         </h2>
-        <p>Contains all active weather warnings nationwide, including marine alerts and all counties.</p>
+        <div style="font-size: 0.9rem; color: var(--text-muted);">
+          Showing <span id="countyCount">{{ COUNTY_TOTAL_COUNT }}</span> counties
+        </div>
       </div>
-      <div class="button-group" style="min-width: 280px;">
-        <a href="webcal://{{ SITE_HOST }}/all.ics" class="btn btn-primary" data-feed="all.ics" onclick="handleSubscribe(event, 'all.ics')">
-          <span>📅 Subscribe</span>
-        </a>
-        <button class="btn btn-secondary" onclick="copyFeedUrl('all.ics')">
-          <span>📋 Copy URL</span>
-        </button>
-      </div>
-    </div>
+      <p class="section-subtitle">
+        Subscribe to your specific county to get alerts that affect your local area, without unwanted clutter from other regions.
+      </p>
 
-    <!-- Marine & Coastal Feed -->
-    <div class="featured-card" style="background: linear-gradient(145deg, #1e293b, #0c2a40); border-color: #38bdf8; margin-top: -1.25rem;">
-      <div class="featured-info">
-        <h2>
-          <span>⚓ Coastal & Marine Waters Feed</span>
-          {{ MARINE_BADGE }}
+      <!-- Search Controls -->
+      <div class="controls">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="countySearch" class="search-input" placeholder="Search county (e.g. Dublin, Cork, Galway)..." aria-label="Search county">
+        </div>
+      </div>
+
+      <!-- County Feeds Grid -->
+      <div class="county-grid" id="countyGrid">
+        {{ COUNTY_CARDS }}
+        <div class="no-results" id="noResults">
+          No counties matching "<span id="searchTerm"></span>"
+        </div>
+      </div>
+    </section>
+
+    <!-- Specialized & Broader Feeds (Nationwide & Marine) -->
+    <section style="margin-bottom: 3.5rem;">
+      <div class="section-title-wrap">
+        <h2 class="section-title">
+          <span>🌐 Broader & Specialized Feeds</span>
         </h2>
-        <p>Marine gale, storm, and small craft warnings for all Irish coastal waters, coasts, and the Irish Sea.</p>
       </div>
-      <div class="button-group" style="min-width: 280px;">
-        <a href="webcal://{{ SITE_HOST }}/marine.ics" class="btn btn-primary" data-feed="marine.ics" onclick="handleSubscribe(event, 'marine.ics')">
-          <span>📅 Subscribe</span>
-        </a>
-        <button class="btn btn-secondary" onclick="copyFeedUrl('marine.ics')">
-          <span>📋 Copy URL</span>
-        </button>
-      </div>
-    </div>
+      <p class="section-subtitle">
+        These feeds cover broader geographic zones. <strong>Note:</strong> The nationwide feed is high-volume and aggregates every warning across Ireland.
+      </p>
 
-    <!-- Search Controls -->
-    <div class="controls">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="countySearch" class="search-input" placeholder="Search county (e.g. Dublin, Cork, Galway)..." aria-label="Search county">
+      <!-- Nationwide Feed Card -->
+      <div class="featured-card" style="background: linear-gradient(145deg, #1e293b, #192038); border-color: #475569; margin-bottom: 1.25rem;">
+        <div class="featured-info">
+          <div><span class="notice-pill notice-pill-warning">⚠️ High Volume / Noisy Calendar</span></div>
+          <h2>
+            <span>🇮🇪 All Ireland (Nationwide Feed)</span>
+            {{ NATIONWIDE_BADGE }}
+          </h2>
+          <p>
+            Includes <strong>all active warnings across all 26 counties and coastal waters</strong>. During storm season or unsettled periods, this feed will create numerous overlapping events on your calendar. Recommended primarily for emergency managers, transport operators, or weather enthusiasts.
+          </p>
+        </div>
+        <div class="button-group" style="min-width: 280px;">
+          <a href="webcal://{{ SITE_HOST }}/all.ics" class="btn btn-secondary" data-feed="all.ics" onclick="handleSubscribe(event, 'all.ics')">
+            <span>📅 Subscribe</span>
+          </a>
+          <button class="btn btn-secondary" onclick="copyFeedUrl('all.ics')">
+            <span>📋 Copy URL</span>
+          </button>
+        </div>
       </div>
-      <div style="font-size: 0.9rem; color: var(--text-muted);">
-        Showing <span id="countyCount">{{ COUNTY_TOTAL_COUNT }}</span> counties
-      </div>
-    </div>
 
-    <!-- County Feeds Grid -->
-    <div class="county-grid" id="countyGrid">
-      {{ COUNTY_CARDS }}
-      <div class="no-results" id="noResults">
-        No counties matching "<span id="searchTerm"></span>"
+      <!-- Marine & Coastal Feed Card -->
+      <div class="featured-card" style="background: linear-gradient(145deg, #1e293b, #0c2a40); border-color: #38bdf8;">
+        <div class="featured-info">
+          <div><span class="notice-pill notice-pill-marine">⚓ For Mariners & Coastal Waters</span></div>
+          <h2>
+            <span>🌊 Coastal & Marine Waters Feed</span>
+            {{ MARINE_BADGE }}
+          </h2>
+          <p>
+            Offshore gale warnings, storm warnings, and small craft advisories for all Irish coastal waters (up to 30 nautical miles offshore) and the Irish Sea. Ideal for sailors, boaters, fishers, and harbor operations.
+          </p>
+        </div>
+        <div class="button-group" style="min-width: 280px;">
+          <a href="webcal://{{ SITE_HOST }}/marine.ics" class="btn btn-secondary" data-feed="marine.ics" onclick="handleSubscribe(event, 'marine.ics')">
+            <span>📅 Subscribe</span>
+          </a>
+          <button class="btn btn-secondary" onclick="copyFeedUrl('marine.ics')">
+            <span>📋 Copy URL</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
 
     <!-- Client Instructions & Caveats -->
     <section class="info-section">
